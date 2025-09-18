@@ -1,0 +1,20 @@
+.compare-button {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.compare-button:disabled {
+  background-color: #888991;
+  color: #ddd;
+  cursor: not-allowed;
+}
+
+.compare-button:not(:disabled) {
+  background-color: #007bff; /* blue when enabled */
+  color: white;
+}

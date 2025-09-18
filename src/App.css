@@ -1,0 +1,28 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+.main-container {
+  display: flex;
+}
+.arrow-icon {
+  width: 24px;
+}
+.app-main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+}
+.input-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 30px;
+}
+.diff-output {
+  margin-top: 20px;
+  font-size: 1.2em;
+  white-space: pre-wrap;
+}
