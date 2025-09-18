@@ -1,5 +1,6 @@
 import "./Forms.css";
-const Forms = () => {
+
+const Forms = ({ addActive, onAddNew }) => {
   return (
     <div className="app">
       <span className="line-box">
@@ -10,13 +11,18 @@ const Forms = () => {
             <option value="russian">რუსული</option>
           </select>
         </div>
+
         <div className="checkbox-container">
           <input type="checkbox" id="font-selection" className="checkbox" />
           <label htmlFor="font-selection" className="checkbox-label">
             ფორმატის შენარჩუნება
           </label>
         </div>
-        <button className="add-button">
+        <button
+          className={`add-button ${addActive ? "active" : ""}`}
+          onClick={onAddNew}
+          disabled={!addActive}
+        >
           <img src="/plus.svg" alt="" className="plus-icon" />
           <span className="button-text">ახლის გახსნა</span>
         </button>
@@ -24,4 +30,5 @@ const Forms = () => {
     </div>
   );
 };
+
 export default Forms;

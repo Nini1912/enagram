@@ -9,19 +9,40 @@ function App() {
   const [text1, setText1] = useState("");
   const [text2, setText2] = useState("");
   const [diffResult, setDiffResult] = useState(null);
+  const [checkClicked, setCheckClicked] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
 
-  const handleText1Change = (event) => {
-    setText1(event.target.value);
-  };
-
-  const handleText2Change = (event) => {
-    setText2(event.target.value);
-  };
+  const handleText1Change = (event) => setText1(event.target.value);
+  const handleText2Change = (event) => setText2(event.target.value);
 
   const handleCompare = () => {
-    const diffs = diffTexts(text1, text2);
-    console.log("Diff result:", diffs);
-    setDiffResult(diffs);
+    setCheckClicked(true);
+    setLoading(true);
+    setProgress(0);
+
+    let fakeProgress = 0;
+    const interval = setInterval(() => {
+      fakeProgress += 10;
+      setProgress(fakeProgress);
+      if (fakeProgress >= 100) {
+        clearInterval(interval);
+        setTimeout(() => {
+          const diffs = diffTexts(text1, text2);
+          setDiffResult(diffs);
+          setLoading(false);
+        }, 500);
+      }
+    }, 150);
+  };
+
+  const handleAddNew = () => {
+    setText1("");
+    setText2("");
+    setDiffResult(null);
+    setCheckClicked(false);
+    setLoading(false);
+    setProgress(0);
   };
 
   function diffTexts(a, b) {
@@ -66,56 +87,64 @@ function App() {
     <div className="main-container">
       <MenuBar />
       <div>
-        <Forms />
+        <Forms addActive={checkClicked} onAddNew={handleAddNew} />
         <div className="app-main-content">
-          <div className="input-section">
-            <TextInputArea
-              value={text1}
-              onChange={handleText1Change}
-              diffMode={!!diffResult}
-              diffContent={
-                diffResult
-                  ? diffResult
-                      .map((part) => {
-                        if (part.type === "delete") {
-                          return `<span class="delete">${part.char}</span>`;
-                        } else if (part.type === "equal") {
-                          return part.char;
-                        } else {
-                          return "";
-                        }
-                      })
-                      .join("")
-                  : ""
-              }
-            />
-
-            <img src="/arrow.svg" alt="" className="arrow-icon" />
-
-            <TextInputArea
-              value={text2}
-              onChange={handleText2Change}
-              diffMode={!!diffResult}
-              diffContent={
-                diffResult
-                  ? diffResult
-                      .map((part) => {
-                        if (part.type === "insert") {
-                          return `<span class="insert">${part.char}</span>`;
-                        } else if (part.type === "equal") {
-                          return part.char;
-                        } else {
-                          return "";
-                        }
-                      })
-                      .join("")
-                  : ""
-              }
-            />
-          </div>
+          {loading ? (
+            <div className="loading-card">
+              <p>Converting... Thank you for your patience</p>
+              <div className="progress-bar">
+                <div
+                  className="progress-fill"
+                  style={{ width: `${progress}%` }}
+                >
+                  {progress}%
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className={`input-section ${diffResult ? "diff-mode" : ""}`}>
+              <TextInputArea
+                value={text1}
+                onChange={handleText1Change}
+                diffMode={!!diffResult}
+                diffContent={
+                  diffResult
+                    ? diffResult
+                        .map((part) =>
+                          part.type === "delete"
+                            ? `<span class="delete">${part.char}</span>`
+                            : part.type === "equal"
+                            ? part.char
+                            : ""
+                        )
+                        .join("")
+                    : ""
+                }
+              />
+              <img src="/arrow.svg" alt="" className="arrow-icon" />
+              <TextInputArea
+                value={text2}
+                onChange={handleText2Change}
+                diffMode={!!diffResult}
+                diffContent={
+                  diffResult
+                    ? diffResult
+                        .map((part) =>
+                          part.type === "insert"
+                            ? `<span class="insert">${part.char}</span>`
+                            : part.type === "equal"
+                            ? part.char
+                            : ""
+                        )
+                        .join("")
+                    : ""
+                }
+              />
+            </div>
+          )}
           <CheckButton
             onClick={handleCompare}
-            disabled={!text1.trim() && !text2.trim()}
+            disabled={(!text1.trim() && !text2.trim()) || loading}
           />
         </div>
       </div>

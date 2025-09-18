@@ -60,3 +60,8 @@
   margin-top: 20px;
   margin-bottom: 20px;
 }
+.add-button.active {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: #fff;
+}
